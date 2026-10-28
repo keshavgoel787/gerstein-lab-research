@@ -1,0 +1,5 @@
+HG00405 vs HG00403
+  sites compared : 925,730
+  IBS0 fraction  : 0.00001
+  KING kinship   : 0.2967
+  inferred       : 1st degree (parent-offspring or full sibling)

@@ -1,0 +1,5 @@
+data/
+*.vcf.gz
+*.vcf.gz.tbi
+.DS_Store
+__pycache__/

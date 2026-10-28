@@ -1,0 +1,5 @@
+HG00405 vs HG00406
+  sites compared : 925,730
+  IBS0 fraction  : 0.00426
+  KING kinship   : 0.0507
+  inferred       : 3rd degree
