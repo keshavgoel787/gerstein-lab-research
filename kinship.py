@@ -13,6 +13,7 @@ called genotype, and reports:
 
 Usage:
     python3 kinship.py chr22.vcf.gz HG00405 HG00403
+    python3 kinship.py chr22.vcf.gz HG00405 HG00403 --min-maf 0.05 --af-field AF_EAS
 """
 import argparse
 import gzip
@@ -35,7 +36,17 @@ def dosage(gt):
     return gt.count("1")
 
 
-def compare(vcf_path, a, b):
+def minor_af(info, field):
+    """Minor allele frequency from an INFO field such as AF or AF_EAS."""
+    key = field + "="
+    for item in info.split(";"):
+        if item.startswith(key):
+            af = float(item[len(key):])
+            return min(af, 1 - af)
+    return None
+
+
+def compare(vcf_path, a, b, min_maf=0.0, af_field="AF"):
     n = het_het = ibs0 = het_a = het_b = 0
     with gzip.open(vcf_path, "rt") as f:
         for line in f:
@@ -53,6 +64,10 @@ def compare(vcf_path, a, b):
             # biallelic SNVs only
             if len(ref) != 1 or len(alt) != 1 or alt == ".":
                 continue
+            if min_maf > 0:
+                maf = minor_af(cols[7], af_field)
+                if maf is None or maf < min_maf:
+                    continue
             ga, gb = dosage(cols[ia]), dosage(cols[ib])
             if ga is None or gb is None:
                 continue
@@ -79,9 +94,13 @@ def main():
     p.add_argument("vcf")
     p.add_argument("sample_a")
     p.add_argument("sample_b")
+    p.add_argument("--min-maf", type=float, default=0.0,
+                   help="keep only sites with minor allele frequency at least this (e.g. 0.05)")
+    p.add_argument("--af-field", default="AF",
+                   help="INFO field holding the allele frequency (AF, or AF_EAS etc. for one superpopulation)")
     args = p.parse_args()
 
-    n, ibs0, phi = compare(args.vcf, args.sample_a, args.sample_b)
+    n, ibs0, phi = compare(args.vcf, args.sample_a, args.sample_b, args.min_maf, args.af_field)
     print(f"{args.sample_a} vs {args.sample_b}")
     print(f"  sites compared : {n:,}")
     print(f"  IBS0 fraction  : {ibs0 / n:.5f}" if n else "  IBS0 fraction  : n/a")
