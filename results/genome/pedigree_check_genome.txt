@@ -1,0 +1,31 @@
+4,776,435-7,867,162 sites per population (MAF >= 5% within the population)
+pedigree relationship    pairs      φ (mean ± sd)   inferred degree
+parent-child          1,206   0.2490 ± 0.0044   1st 1206
+full sibling              5   0.2519 ± 0.0178   1st 5
+half sibling              1   0.1397 ± 0.0000   2nd 1
+grandparent               7   0.1236 ± 0.0242   2nd 7
+avuncular                 3   0.1360 ± 0.0102   2nd 3
+none in pedigree    205,387  -0.0076 ± 0.0196   1st 20, 2nd 26, 3rd 59, unrelated 205282
+degree matches pedigree for 206,504 of 206,609 pairs (99.95%)
+
+Conflicts (related pairs called wrong, or pedigree-unrelated pairs called 1st degree or closer):
+  ACB HG02479 HG02429  pedigree: none in pedigree  IBS0 91551  φ 0.2577  inferred: 1st
+  ASW NA19913 NA19904  pedigree: none in pedigree  IBS0 555  φ 0.2483  inferred: 1st
+  ASW NA20318 NA20317  pedigree: none in pedigree  IBS0 299  φ 0.2500  inferred: 1st
+  ASW NA20321 NA20320  pedigree: none in pedigree  IBS0 3241  φ 0.2486  inferred: 1st
+  ASW NA20355 NA20334  pedigree: none in pedigree  IBS0 490  φ 0.2484  inferred: 1st
+  ASW NA20362 NA20359  pedigree: none in pedigree  IBS0 781  φ 0.2482  inferred: 1st
+  CEU NA12813 NA07045  pedigree: none in pedigree  IBS0 87793  φ 0.2353  inferred: 1st
+  CHS HG00512 HG00501  pedigree: none in pedigree  IBS0 80458  φ 0.2532  inferred: 1st
+  CHS HG00524 HG00501  pedigree: none in pedigree  IBS0 66140  φ 0.2638  inferred: 1st
+  CHS HG00524 HG00512  pedigree: none in pedigree  IBS0 68079  φ 0.2618  inferred: 1st
+  CHS HG00581 HG00578  pedigree: none in pedigree  IBS0 67510  φ 0.2565  inferred: 1st
+  CHS HG00584 HG00577  pedigree: none in pedigree  IBS0 72157  φ 0.2552  inferred: 1st
+  CHS HG00635 HG00578  pedigree: none in pedigree  IBS0 72442  φ 0.2516  inferred: 1st
+  CHS HG00635 HG00581  pedigree: none in pedigree  IBS0 81821  φ 0.2287  inferred: 1st
+  GIH NA20900 NA20882  pedigree: none in pedigree  IBS0 1085  φ 0.2505  inferred: 1st
+  GIH NA20900 NA20891  pedigree: none in pedigree  IBS0 1223  φ 0.2470  inferred: 1st
+  LWK NA19334 NA19331  pedigree: none in pedigree  IBS0 109618  φ 0.2392  inferred: 1st
+  PEL HG02302 HG02298  pedigree: none in pedigree  IBS0 62436  φ 0.2671  inferred: 1st
+  STU HG03754 HG03750  pedigree: none in pedigree  IBS0 1340  φ 0.2475  inferred: 1st
+  STU HG03899 HG03733  pedigree: none in pedigree  IBS0 87883  φ 0.2431  inferred: 1st

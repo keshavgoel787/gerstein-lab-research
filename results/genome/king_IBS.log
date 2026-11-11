@@ -1,0 +1,33 @@
+PLINK v2.0.0-b.1.3 M1 (31 Oct 2026)
+Options in effect:
+  --keep data/genome/keep_IBS.txt
+  --maf 0.05
+  --make-king-table counts
+  --out results/genome/king_IBS
+  --pfile data/genome/autosomes
+  --threads 8
+
+Hostname: Mac
+Working directory: /Users/keshavgoel/Code/kinship
+Start time: Wed Nov 11 01:01:58 2026
+
+Random number seed: 1794376918
+16384 MiB RAM detected; reserving 8192 MiB for main workspace.
+Using up to 8 compute threads.
+3202 samples (0 females, 0 males, 3202 ambiguous; 3202 founders) loaded from
+data/genome/autosomes.psam.
+53949664 variants loaded from data/genome/autosomes.pvar.
+Note: No phenotype data present.
+--keep: 157 samples remaining.
+157 samples (0 females, 0 males, 157 ambiguous; 157 founders) remaining after
+main filters.
+Calculating allele frequencies... done.
+48590942 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+5358722 variants remaining after main filters.
+--make-king-table pass 1/1: Scanning for rare variants... done.
+0 variants handled by initial scan (5358722 remaining).
+--make-king-table: 5358722 variants processed.
+Results written to results/genome/king_IBS.kin0 .
+
+End time: Wed Nov 11 01:02:11 2026
