@@ -4,6 +4,7 @@
   results/plots/king_distribution.png   genome-wide KING score, pedigree-related vs not
   results/plots/chr22_vs_genome.png     unrelated pairs: chr22 alone vs 20 autosomes
   results/plots/heatmap_CHS.png         all CHS pairs, samples grouped by pedigree family
+  results/plots/subsample.png           accuracy vs number of random variants (from subsample.sh)
 
 Usage:
     python3 plots.py
@@ -145,6 +146,35 @@ def heatmap(rows, ped, pop="CHS"):
     fig.savefig(f"{OUT}/heatmap_{pop}.png", dpi=200)
 
 
+def subsample():
+    rows = list(csv.DictReader(open("results/subsample/summary.tsv"), delimiter="\t"))
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.2))
+    panels = (("match", "Pairs whose call matches the pedigree", (70, 101)),
+              ("unrelated_fp", "Strangers falsely called 3rd degree or closer", (-1, 26)))
+    for ax, (col, title, ylim) in zip(axes, panels):
+        for vset, color, label in (("common", UNRELATED, "random common variants"),
+                                   ("pruned", RELATED, "random LD-pruned common variants")):
+            pts = [(int(r["variants"].replace(",", "")), 100 * float(r[col]))
+                   for r in rows if r["variant_set"] == vset]
+            x, y = zip(*pts)
+            ax.plot(x, y, color=color, lw=2, marker="o", ms=6, mec=SURFACE, mew=1.5, label=label)
+            ax.annotate(f"{y[-1]:.2f}%" if col == "unrelated_fp" else f"{y[-1]:.2f}%", (x[-1], y[-1]),
+                        (6, 6 if vset == "common" else -12), textcoords="offset points", fontsize=8, color=INK_2)
+        ax.set_xscale("log")
+        ax.set_xticks([100, 1000, 10000, 100000], ["100", "1,000", "10,000", "100,000"])
+        ax.set_ylim(*ylim)
+        ax.set_xlabel("Variants per comparison (log scale)")
+        ax.set_ylabel("%")
+        ax.grid(color=GRID, lw=0.6)
+        ax.set_axisbelow(True)
+        ax.set_title(title, loc="left", fontsize=10, fontweight="bold")
+    axes[0].legend(frameon=False, loc="lower right")
+    fig.suptitle("About 10,000 random common variants give the full genome-wide result "
+                 "(206,609 pairs, mean of 5 draws)", x=0.01, ha="left", fontsize=11, fontweight="bold")
+    fig.tight_layout()
+    fig.savefig(f"{OUT}/subsample.png", dpi=200)
+
+
 def main():
     import os
     os.makedirs(OUT, exist_ok=True)
@@ -153,6 +183,7 @@ def main():
     distribution(rows, ped)
     chr22_vs_genome(rows, ped)
     heatmap(rows, ped)
+    subsample()
 
 
 if __name__ == "__main__":

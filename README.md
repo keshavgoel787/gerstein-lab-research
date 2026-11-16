@@ -11,6 +11,8 @@ Work with Eric Ni: given two people's genomes, decide whether they are related. 
 | `pedigree_check.py` | Scores every pair within each population, filtering to common variants per population, and checks the inferred degree against the pedigree. Needs numpy. |
 | `run_genome.sh` | Genome-wide run on a laptop: downloads each autosome, checks its MD5, converts SNVs to PLINK 2 format, deletes the VCF, then runs `plink2 --make-king-table` per population. Needs plink2 (`brew install plink-ng`). |
 | `king_vs_pedigree.py` | Checks plink2 `.kin0` tables against the pedigree and lists the conflicts. |
+| `subsample.sh` / `subsample_eval.py` | How few variants KING needs: scores every pair on random subsets of 100–100,000 common variants, with and without LD pruning, and compares against the pedigree and the full scores. |
+| `plots.py` | The figures in `results/plots/`. |
 
 ```
 python3 kinship.py data/<chr22 vcf.gz> HG00405 HG00403 --min-maf 0.05 --af-field AF_EAS
@@ -60,6 +62,26 @@ The three original CHS pairs, genome-wide:
 - The few remaining conflicts are relatives the pedigree doesn't list. 20 pedigree-unrelated pairs score as 1st degree (φ ≈ 0.25). IBS0 says which kind: a few hundred sites means parent–child (e.g. ASW NA20317/NA20318, IBS0 = 299), and 60k–110k sites means full siblings (e.g. CHS HG00501/HG00512, IBS0 = 80,458).
 - Some chr22 "pedigree conflicts" were chr22 noise, not pedigree errors. HG00656 vs his listed grandson HG00703 scored 0.018 on chr22 but 0.114 genome-wide (2nd degree, as listed); a grandchild can easily inherit none of a grandparent's DNA on one short chromosome. KHV HG02059 and her listed father score 0.246 genome-wide, a normal parent–child value.
 
+## How many variants does KING need? (for the zero-knowledge version)
+
+`subsample.sh` keeps sites with MAF ≥ 5% in each population, optionally LD-prunes them (`plink2 --indep-pairwise 500kb 0.2`, about 100k–380k sites left per population), then scores all 206,609 pairs on random subsets, 5 draws per size. Full table: `results/subsample/summary.txt`; plot: `results/plots/subsample.png`.
+
+| Variant set | Variants | Matches pedigree | Parent–child found | Strangers called related | sd, unrelated | RMSE vs full score |
+|---|---|---|---|---|---|---|
+| common | 100 | 80.9% | 85.2% | 19.1% | 0.120 | 0.129 |
+| common | 1,000 | 97.2% | 100% | 2.84% | 0.038 | 0.035 |
+| common | 10,000 | 99.95% | 100% | 0.05% | 0.022 | 0.011 |
+| common | 100,000 | 99.95% | 100% | 0.05% | 0.020 | 0.003 |
+| LD-pruned | 1,000 | 92.4% | 100% | 7.60% | 0.036 | 0.033 |
+| LD-pruned | 10,000 | 99.87% | 100% | 0.13% | 0.019 | 0.018 |
+| LD-pruned | all (~160k) | 99.92% | 100% | 0.08% | 0.017 | 0.017 |
+
+- **10,000 random common variants reproduce the full result**: 99.95% agreement with the pedigree (the same as all ~5–8 million sites), and scores within about 0.01 of the full value.
+- **1,000 variants still find every parent–child pair**, but 2.8% of strangers get called 3rd degree or closer.
+- **100 is too few**: scores swing by ±0.06 between draws.
+- **LD pruning didn't help** here and was slightly worse at 1,000–10,000 variants. A random draw of a few thousand sites from 3 billion bases is already spread out, so the sites are mostly uncorrelated anyway. Why pruned subsets are noisier is not yet checked (one guess: the pruned sites have a different allele-frequency mix).
+- Daughter–father (full score 0.252) stays at 0.253 ± 0.005 with 10,000 common variants; the two unrelated pairs stay at 0.000 ± 0.007 and 0.012 ± 0.010.
+
 ## Results (chr22)
 
 ### 1. Every pair vs. the pedigree
@@ -107,4 +129,4 @@ The original three CHS pairs, rerun with `--min-maf 0.05 --af-field AF_EAS` (82,
 
 1. Get chr6 and chr9: retry the download, or fetch them on the cluster.
 2. Check the 20 unlisted 1st-degree pairs against the 1000G related-samples list.
-3. Test how few SNPs KING needs to stay accurate. That decides the size of a zero-knowledge kinship proof.
+3. Find out why LD-pruned subsets are noisier than random common ones, and try a site panel fixed in advance (the same 10,000 sites for everyone), which is what a ZK circuit would use.
