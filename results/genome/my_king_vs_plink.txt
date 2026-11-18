@@ -1,0 +1,31 @@
+ACB: 7,574,984 sites, 116 samples
+ASW: 7,382,042 sites, 74 samples
+BEB: 5,399,121 sites, 131 samples
+CDX: 4,865,163 sites, 93 samples
+CEU: 5,339,362 sites, 179 samples
+CHB: 4,890,461 sites, 103 samples
+CHS: 4,878,105 sites, 163 samples
+CLM: 5,505,193 sites, 132 samples
+ESN: 7,704,608 sites, 149 samples
+FIN: 5,385,026 sites, 99 samples
+GBR: 5,244,076 sites, 91 samples
+GIH: 5,437,127 sites, 103 samples
+GWD: 7,618,391 sites, 178 samples
+IBS: 5,358,722 sites, 157 samples
+ITU: 5,488,557 sites, 107 samples
+JPT: 4,896,730 sites, 104 samples
+KHV: 4,889,224 sites, 122 samples
+LWK: 7,695,755 sites, 99 samples
+MSL: 7,867,162 sites, 99 samples
+MXL: 5,377,444 sites, 97 samples
+PEL: 4,776,435 sites, 122 samples
+PJL: 5,489,611 sites, 146 samples
+PUR: 5,753,449 sites, 139 samples
+STU: 5,444,598 sites, 114 samples
+TSI: 5,373,329 sites, 107 samples
+YRI: 7,651,951 sites, 178 samples
+
+My between-family KING vs plink2 --make-king-table, 206,609 within-population pairs:
+  correlation 1.000000, mean |diff| 1.09e-08, max |diff| 5.00e-07, same degree call 100.0000%
+  my within-family estimator: matches pedigree for 206,502 of 206,609 pairs (99.95%); parent-child called 1st degree 1,206 of 1,206
+  my between-family estimator: matches pedigree for 206,504 of 206,609 pairs (99.95%); parent-child called 1st degree 1,206 of 1,206

@@ -40,7 +40,7 @@ def main():
                 if d != EXPECTED_DEGREE[rel] and (rel != "none in pedigree" or d in (0, 1)):
                     conflicts.append((ped[a]["Population"], a, b, rel, int(r["IBS0"]), phi, DEGREE_NAME[d]))
 
-    print(f"{min(sites):,}-{max(sites):,} sites per population (MAF >= 5% within the population)")
+    print(f"{min(sites):,}-{max(sites):,} sites per population")
     print(f"{'pedigree relationship':<18} {'pairs':>8} {'φ (mean ± sd)':>18}   inferred degree")
     for rel in EXPECTED_DEGREE:
         if rel not in tally:

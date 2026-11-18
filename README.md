@@ -13,6 +13,8 @@ Work with Eric Ni: given two people's genomes, decide whether they are related. 
 | `king_vs_pedigree.py` | Checks plink2 `.kin0` tables against the pedigree and lists the conflicts. |
 | `subsample.sh` / `subsample_eval.py` | How few variants KING needs: scores every pair on random subsets of 100–100,000 common variants, with and without LD pruning, and compares against the pedigree and the full scores. |
 | `plots.py` | The figures in `results/plots/`. |
+| `genome_check.py` | Runs my own KING code on the same genome-wide sites plink2 used and compares the two. |
+| `fixed_panel.sh` | One fixed site panel for everyone, as a zero-knowledge circuit would need. See [ZK_NOTES.md](ZK_NOTES.md). |
 
 ```
 python3 kinship.py data/<chr22 vcf.gz> HG00405 HG00403 --min-maf 0.05 --af-field AF_EAS
@@ -62,6 +64,10 @@ The three original CHS pairs, genome-wide:
 - The few remaining conflicts are relatives the pedigree doesn't list. 20 pedigree-unrelated pairs score as 1st degree (φ ≈ 0.25). IBS0 says which kind: a few hundred sites means parent–child (e.g. ASW NA20317/NA20318, IBS0 = 299), and 60k–110k sites means full siblings (e.g. CHS HG00501/HG00512, IBS0 = 80,458).
 - Some chr22 "pedigree conflicts" were chr22 noise, not pedigree errors. HG00656 vs his listed grandson HG00703 scored 0.018 on chr22 but 0.114 genome-wide (2nd degree, as listed); a grandchild can easily inherit none of a grandparent's DNA on one short chromosome. KHV HG02059 and her listed father score 0.246 genome-wide, a normal parent–child value.
 
+### My code vs plink2, genome-wide
+
+`genome_check.py` exports the sites plink2 scored to `.bed` files, decodes them with numpy and computes KING with the counting code from `pedigree_check.py` (`results/genome/my_king_vs_plink.txt`). Across all 206,609 pairs my between-family scores match plink2's to within 5 × 10⁻⁷, which is plink2's printing precision, and every degree call is the same. My within-family estimator matches the pedigree for 206,502 pairs (99.95%) and calls all 1,206 parent–child pairs correctly.
+
 ## How many variants does KING need? (for the zero-knowledge version)
 
 `subsample.sh` keeps sites with MAF ≥ 5% in each population, optionally LD-prunes them (`plink2 --indep-pairwise 500kb 0.2`, about 100k–380k sites left per population), then scores all 206,609 pairs on random subsets, 5 draws per size. Full table: `results/subsample/summary.txt`; plot: `results/plots/subsample.png`.
@@ -81,6 +87,17 @@ The three original CHS pairs, genome-wide:
 - **100 is too few**: scores swing by ±0.06 between draws.
 - **LD pruning didn't help** here and was slightly worse at 1,000–10,000 variants. A random draw of a few thousand sites from 3 billion bases is already spread out, so the sites are mostly uncorrelated anyway. Why pruned subsets are noisier is not yet checked (one guess: the pruned sites have a different allele-frequency mix).
 - Daughter–father (full score 0.252) stays at 0.253 ± 0.005 with 10,000 common variants; the two unrelated pairs stay at 0.000 ± 0.007 and 0.012 ± 0.010.
+
+### A fixed panel (what a circuit would use)
+
+`fixed_panel.sh` draws one random panel from the 2,650,251 SNVs with MAF ≥ 5% in all 26 populations and scores every pair on that same panel (`results/panel/`):
+
+| Fixed panel | Matches pedigree | Parent–child found | Strangers called related |
+|---|---|---|---|
+| 1,000 sites | 97.55% | 1,205 of 1,206 | 2.5% |
+| 10,000 sites | 99.95% | 1,206 of 1,206 | 0.05% |
+
+A shared 10,000-site panel is as good as the full genome. [ZK_NOTES.md](ZK_NOTES.md) sketches how the KING test becomes integer-only arithmetic over committed genotype bits.
 
 ## Results (chr22)
 
@@ -129,4 +146,5 @@ The original three CHS pairs, rerun with `--min-maf 0.05 --af-field AF_EAS` (82,
 
 1. Get chr6 and chr9: retry the download, or fetch them on the cluster.
 2. Check the 20 unlisted 1st-degree pairs against the 1000G related-samples list.
-3. Find out why LD-pruned subsets are noisier than random common ones, and try a site panel fixed in advance (the same 10,000 sites for everyone), which is what a ZK circuit would use.
+3. Find out why LD-pruned subsets are noisier than random common ones.
+4. Settle the open questions in ZK_NOTES.md (panel choice, commitments, what the proof reveals), then build a first circuit for the 10,000-site panel.
